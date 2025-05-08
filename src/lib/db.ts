@@ -1,23 +1,25 @@
 const API_URL = (import.meta.env.VITE_API_URL || 'https://tmbackend.netlify.app/').replace(/\/+$/, '');
 
-// lib/db.js
-export const login = async (email, password) => {
-  const response = await fetch('https://tmbackend.netlify.app/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-    credentials: 'include',
-  });
+export async function login(email: string, password: string): Promise<void> {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include',
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to login');
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to login');
+    }
+
+    const { token } = await response.json();
+    localStorage.setItem('admin_token', token);
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : 'Network error occurred');
   }
-
-  const data = await response.json();
-  localStorage.setItem('token', data.token);
-};
+}
 
 export async function logout(): Promise<void> {
   localStorage.removeItem('admin_token');
