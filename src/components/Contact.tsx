@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -19,23 +20,37 @@ const Contact = () => {
     setStatus('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/contact/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const currentTime = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'medium',
+        timeStyle: 'short',
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        setStatus('Message sent successfully!');
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        time: currentTime,
+        reply_to: formData.email, // Allows replying directly to the sender
+      };
+
+      const response = await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        templateParams,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      if (response.status === 200) {
+        setStatus('Message sent successfully! We will get back to you soon.');
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        setStatus(result.error || 'Failed to send message. Please try again.');
+        setStatus('Failed to send message. Please try again later.');
       }
     } catch (err) {
-      setStatus('Failed to send message. Please try again.');
+      console.error('EmailJS error:', err);
+      setStatus('Failed to send message. Please try again later.');
     }
   };
 
