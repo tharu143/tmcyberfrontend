@@ -1,0 +1,378 @@
+const API_URL = (import.meta.env.VITE_API_URL || 'https://tmbackend.netlify.app/').replace(/\/+$/, '');
+
+export async function login(email: string, password: string): Promise<void> {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to login');
+    }
+
+    const { token } = await response.json();
+    localStorage.setItem('admin_token', token);
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : 'Network error occurred');
+  }
+}
+
+export async function logout(): Promise<void> {
+  localStorage.removeItem('admin_token');
+}
+
+export async function isValidAdmin(): Promise<boolean> {
+  const token = localStorage.getItem('admin_token');
+  if (!token) return false;
+
+  try {
+    const response = await fetch(`${API_URL}/api/auth/verify`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
+    });
+    const data = await response.json();
+    return data.valid;
+  } catch {
+    return false;
+  }
+}
+
+// Admins CRUD
+export async function getAdmins(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/admins`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch admins');
+  }
+
+  return response.json();
+}
+
+export async function createAdmin(email: string, password: string): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/admins`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create admin');
+  }
+
+  return response.json();
+}
+
+export async function updateAdmin(id: string, email: string, password?: string): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/admins/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update admin');
+  }
+
+  return response.json();
+}
+
+export async function deleteAdmin(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/admins/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete admin');
+  }
+}
+
+// Employees CRUD
+export async function getEmployees(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/employees`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch employees');
+  }
+
+  return response.json();
+}
+
+export async function createEmployee(data: { name: string; email: string; position: string; joining_date: string; salary: number }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/employees`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create employee');
+  }
+
+  return response.json();
+}
+
+export async function updateEmployee(id: string, data: { name: string; email: string; position: string; joining_date: string; salary: number }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/employees/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update employee');
+  }
+
+  return response.json();
+}
+
+export async function deleteEmployee(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/employees/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete employee');
+  }
+}
+
+// Attendance CRUD
+export async function getAttendance(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/attendance`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch attendance');
+  }
+
+  return response.json();
+}
+
+export async function createAttendance(data: { employee_id: string; date: string; status: string }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/attendance`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create attendance');
+  }
+
+  return response.json();
+}
+
+export async function updateAttendance(id: string, data: { employee_id: string; date: string; status: string }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/attendance/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update attendance');
+  }
+
+  return response.json();
+}
+
+export async function deleteAttendance(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/attendance/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete attendance');
+  }
+}
+
+// Tasks CRUD
+export async function getTasks(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/tasks`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch tasks');
+  }
+
+  return response.json();
+}
+
+export async function createTask(data: { employee_id: string; title: string; description: string; status: string; due_date: string }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/tasks`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create task');
+  }
+
+  return response.json();
+}
+
+export async function updateTask(id: string, data: { employee_id: string; title: string; description: string; status: string; due_date: string }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/tasks/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update task');
+  }
+
+  return response.json();
+}
+
+export async function deleteTask(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/tasks/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete task');
+  }
+}
+
+// Certificates CRUD
+export async function getCertificates(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/certificates`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch certificates');
+  }
+
+  return response.json();
+}
+
+export async function createCertificate(data: { name: string; start_date: string; end_date: string; type: string }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/certificates`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create certificate');
+  }
+
+  return response.json();
+}
+
+export async function updateCertificate(id: string, data: { name: string; start_date: string; end_date: string; type: string }): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/certificates/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update certificate');
+  }
+
+  return response.json();
+}
+
+export async function deleteCertificate(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/certificates/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete certificate');
+  }
+}
