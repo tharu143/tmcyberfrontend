@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@stackframe/stack": "^2.8.11",
     "bcryptjs": "^2.4.3",
     "date-fns": "^3.0.0",
