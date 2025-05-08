@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Utensils, ShoppingBag, Building, Briefcase } from 'lucide-react';
+import { ArrowRight, Utensils, ShoppingBag, Building, Briefcase, Smartphone, Coffee, Cake, Warehouse } from 'lucide-react';
 
 const Products: React.FC = () => {
   return (
@@ -51,13 +51,13 @@ const Products: React.FC = () => {
             
             <div className="flex flex-wrap gap-4">
               <a 
-                href="#contact" 
+                href="/products/unavu"
                 className="bg-[#094323] hover:bg-[#0d5c31] text-white py-3 px-6 rounded-md font-medium transition-all flex items-center"
               >
                 Free Demo Available <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a 
-                href="#contact" 
+                href="/contact"
                 className="bg-white hover:bg-gray-100 text-[#094323] border-2 border-[#094323] py-3 px-6 rounded-md font-medium transition-all"
               >
                 Contact for Details
@@ -78,7 +78,7 @@ const Products: React.FC = () => {
           <h3 className="text-2xl font-semibold text-[#094323] mb-6">Other Industry Solutions</h3>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all">
             <ShoppingBag className="h-12 w-12 text-[#094323] mb-4" />
             <h4 className="text-xl font-semibold text-gray-800 mb-3">Retail Management</h4>
@@ -86,7 +86,7 @@ const Products: React.FC = () => {
               Comprehensive solution for inventory management, POS, and customer relationship management.
             </p>
             <a 
-              href="#contact" 
+              href="/products/retail-management"
               className="text-[#094323] font-medium inline-flex items-center hover:underline"
             >
               Learn more <ArrowRight className="ml-1 h-4 w-4" />
@@ -100,7 +100,7 @@ const Products: React.FC = () => {
               Property management, tenant portal, and maintenance tracking system for real estate businesses.
             </p>
             <a 
-              href="#contact" 
+              href="/products/real-estate-suite"
               className="text-[#094323] font-medium inline-flex items-center hover:underline"
             >
               Learn more <ArrowRight className="ml-1 h-4 w-4" />
@@ -114,7 +114,63 @@ const Products: React.FC = () => {
               Data analytics and reporting tools to help businesses make informed decisions.
             </p>
             <a 
-              href="#contact" 
+              href="/products/business-intelligence"
+              className="text-[#094323] font-medium inline-flex items-center hover:underline"
+            >
+              Learn more <ArrowRight className="ml-1 h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all">
+            <Smartphone className="h-12 w-12 text-[#094323] mb-4" />
+            <h4 className="text-xl font-semibold text-gray-800 mb-3">Mobile Shop Retail Management</h4>
+            <p className="text-gray-600 mb-4">
+              Mobile app for managing inventory, sales, and billing in mobile shops.
+            </p>
+            <a 
+              href="/products/mobile-shop-retail-management"
+              className="text-[#094323] font-medium inline-flex items-center hover:underline"
+            >
+              Learn more <ArrowRight className="ml-1 h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all">
+            <Coffee className="h-12 w-12 text-[#094323] mb-4" />
+            <h4 className="text-xl font-semibold text-gray-800 mb-3">Tea Shop Billing</h4>
+            <p className="text-gray-600 mb-4">
+              Mobile app for efficient billing and order management in tea shops.
+            </p>
+            <a 
+              href="/products/tea-shop-billing"
+              className="text-[#094323] font-medium inline-flex items-center hover:underline"
+            >
+              Learn more <ArrowRight className="ml-1 h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all">
+            <Cake className="h-12 w-12 text-[#094323] mb-4" />
+            <h4 className="text-xl font-semibold text-gray-800 mb-3">Bakery Billing Software</h4>
+            <p className="text-gray-600 mb-4">
+              Mobile app for billing, inventory tracking, and sales in bakeries.
+            </p>
+            <a 
+              href="/products/bakery-billing-software"
+              className="text-[#094323] font-medium inline-flex items-center hover:underline"
+            >
+              Learn more <ArrowRight className="ml-1 h-4 w-4" />
+            </a>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all">
+            <Warehouse className="h-12 w-12 text-[#094323] mb-4" />
+            <h4 className="text-xl font-semibold text-gray-800 mb-3">Wholesale Stock Management</h4>
+            <p className="text-gray-600 mb-4">
+              Mobile app for stock entry, returns, and sales reporting for wholesalers.
+            </p>
+            <a 
+              href="/products/wholesale-stock-management"
               className="text-[#094323] font-medium inline-flex items-center hover:underline"
             >
               Learn more <ArrowRight className="ml-1 h-4 w-4" />
