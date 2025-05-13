@@ -42,7 +42,7 @@ const AttendanceManagement = () => {
     try {
       const [attendanceData, employeeData] = await Promise.all([getAttendance(), getEmployees()]);
       setAttendance(attendanceData);
-      setEmployees(employeeData.map((emp: any) => ({ id: emp.id, name: emp.name })));
+      setEmployees(employeeData.map((emp) => ({ id: emp.id, name: emp.name })));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
@@ -55,7 +55,7 @@ const AttendanceManagement = () => {
     return '';
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -106,16 +106,18 @@ const AttendanceManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-100 p-6">
+    <div className="min-h-screen bg-gradient-radial dark:bg-dark-gradient p-6 font-inter">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-primary-500 mb-6">Manage Attendance</h1>
+        <h1 className="text-3xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+          Manage Attendance
+        </h1>
         {error && (
-          <p className="text-red-500 mb-4 bg-red-100 p-3 rounded-lg" role="alert">
+          <p className="text-red-500 mb-4 bg-red-100 dark:bg-red-900 p-3 rounded-lg" role="alert">
             {error}
           </p>
         )}
         {success && (
-          <p className="text-primary-500 mb-4 bg-primary-100 p-3 rounded-lg" role="alert">
+          <p className="text-primary-500 dark:text-primary-100 mb-4 bg-primary-100 dark:bg-dark-700 p-3 rounded-lg" role="alert">
             {success}
           </p>
         )}
@@ -125,11 +127,11 @@ const AttendanceManagement = () => {
             setEditId(null);
             setIsModalOpen(true);
           }}
-          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300"
+          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-lg hover:shadow-neon"
         >
           Create Attendance
         </button>
-        <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+        <div className="bg-white dark:bg-dark-800 rounded-lg shadow-lg overflow-x-auto transform hover:scale-101 transition-transform duration-300">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-primary-500 text-white">
@@ -141,21 +143,23 @@ const AttendanceManagement = () => {
             </thead>
             <tbody>
               {attendance.map((record) => (
-                <tr key={record.id} className="hover:bg-primary-100 transition-colors duration-200">
-                  <td className="p-3 border-b">{record.employee_name}</td>
-                  <td className="p-3 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                  <td className="p-3 border-b">{record.status}</td>
+                <tr key={record.id} className="hover:bg-primary-100 dark:hover:bg-dark-700 transition-colors duration-200">
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{record.employee_name}</td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">
+                    {new Date(record.date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{record.status}</td>
                   <td className="p-3 border-b">
                     <button
                       onClick={() => handleEdit(record)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300"
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                       aria-label={`Edit attendance for ${record.employee_name}`}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(record.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                       aria-label={`Delete attendance for ${record.employee_name}`}
                     >
                       Delete
@@ -168,20 +172,20 @@ const AttendanceManagement = () => {
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h2 className="text-2xl font-bold text-primary-500 mb-4">
+            <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg w-full max-w-md border-l-4 border-primary-500">
+              <h2 className="text-2xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-4">
                 {editId ? 'Update Attendance' : 'Create Attendance'}
               </h2>
-              <form onSubmit={handleSubmit}>
+              <div>
                 <div className="mb-4">
-                  <label htmlFor="employee_id" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="employee_id" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Employee
                   </label>
                   <select
                     id="employee_id"
                     value={form.employee_id}
                     onChange={(e) => setForm({ ...form, employee_id: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                   >
@@ -194,7 +198,7 @@ const AttendanceManagement = () => {
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="date" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="date" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Date
                   </label>
                   <input
@@ -202,20 +206,20 @@ const AttendanceManagement = () => {
                     id="date"
                     value={form.date}
                     onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="status" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="status" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Status
                   </label>
                   <select
                     id="status"
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                   >
@@ -229,18 +233,18 @@ const AttendanceManagement = () => {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                   >
                     Cancel
                   </button>
                   <button
-                    type="submit"
-                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
+                    onClick={handleSubmit}
+                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                   >
                     {editId ? 'Update' : 'Create'}
                   </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         )}

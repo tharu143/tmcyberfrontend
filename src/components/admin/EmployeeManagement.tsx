@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getEmployees, createEmployee, updateEmployee, deleteEmployee, isValidAdmin } from '../../api/index';
+import { getEmployees, updateEmployee, deleteEmployee, isValidAdmin } from '../../api/index';
 
 interface Employee {
   id: string;
@@ -51,7 +51,7 @@ const EmployeeManagement = () => {
     return '';
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -66,9 +66,6 @@ const EmployeeManagement = () => {
       if (editId) {
         await updateEmployee(editId, { ...form, salary: Number(form.salary) });
         setSuccess('Employee updated successfully');
-      } else {
-        await createEmployee({ ...form, salary: Number(form.salary) });
-        setSuccess('Employee created successfully');
       }
       setForm({ name: '', email: '', position: '', joining_date: '', salary: 0 });
       setEditId(null);
@@ -104,30 +101,28 @@ const EmployeeManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-100 p-6">
+    <div className="min-h-screen bg-gradient-radial dark:bg-dark-gradient p-6 font-inter">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-primary-500 mb-6">Manage Employees</h1>
+        <h1 className="text-3xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+          Manage Employees
+        </h1>
         {error && (
-          <p className="text-red-500 mb-4 bg-red-100 p-3 rounded-lg" role="alert">
+          <p className="text-red-500 mb-4 bg-red-100 dark:bg-red-900 p-3 rounded-lg" role="alert">
             {error}
           </p>
         )}
         {success && (
-          <p className="text-primary-500 mb-4 bg-primary-100 p-3 rounded-lg" role="alert">
+          <p className="text-primary-500 dark:text-primary-100 mb-4 bg-primary-100 dark:bg-dark-700 p-3 rounded-lg" role="alert">
             {success}
           </p>
         )}
         <button
-          onClick={() => {
-            setForm({ name: '', email: '', position: '', joining_date: '', salary: 0 });
-            setEditId(null);
-            setIsModalOpen(true);
-          }}
-          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300"
+          onClick={() => navigate('/admin/employees/create')}
+          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-lg hover:shadow-neon"
         >
           Create Employee
         </button>
-        <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+        <div className="bg-white dark:bg-dark-800 rounded-lg shadow-lg overflow-x-auto transform hover:scale-101 transition-transform duration-300">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-primary-500 text-white">
@@ -141,24 +136,26 @@ const EmployeeManagement = () => {
             </thead>
             <tbody>
               {employees.map((employee) => (
-                <tr key={employee.id} className="hover:bg-primary-100 transition-colors duration-200">
-                  <td className="p-3 border-b">{employee.name}</td>
-                  <td className="p-3 border-b">{employee.email}</td>
-                  <td className="p-3 border-b">{employee.position}</td>
-                  <td className="p-3 border-b">{new Date(employee.joining_date).toLocaleDateString()}</td>
-                  <td className="p-3 border-b">{employee.salary}</td>
+                <tr key={employee.id} className="hover:bg-primary-100 dark:hover:bg-dark-700 transition-colors duration-200">
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{employee.name}</td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{employee.email}</td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{employee.position}</td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">
+                    {new Date(employee.joining_date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{employee.salary}</td>
                   <td className="p-3 border-b">
                     <button
                       onClick={() => handleEdit(employee)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300"
-                      aria-label={`Edit ${employee.name}`}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
+                      aria-label={`Edit employee ${employee.name}`}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(employee.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300"
-                      aria-label={`Delete ${employee.name}`}
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
+                      aria-label={`Delete employee ${employee.name}`}
                     >
                       Delete
                     </button>
@@ -170,104 +167,102 @@ const EmployeeManagement = () => {
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-              <h2 className="text-2xl font-bold text-primary-500 mb-4">
-                {editId ? 'Update Employee' : 'Create Employee'}
+            <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg w-full max-w-2xl border-l-4 border-primary-500">
+              <h2 className="text-2xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-4">
+                Update Employee
               </h2>
-              <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      required
-                      aria-required="true"
-                      placeholder="Enter name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      required
-                      aria-required="true"
-                      placeholder="Enter email"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="position" className="block text-gray-700 mb-2 font-medium">
-                      Position
-                    </label>
-                    <input
-                      type="text"
-                      id="position"
-                      value={form.position}
-                      onChange={(e) => setForm({ ...form, position: e.target.value })}
-                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      required
-                      aria-required="true"
-                      placeholder="Enter position"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="joining_date" className="block text-gray-700 mb-2 font-medium">
-                      Joining Date
-                    </label>
-                    <input
-                      type="date"
-                      id="joining_date"
-                      value={form.joining_date}
-                      onChange={(e) => setForm({ ...form, joining_date: e.target.value })}
-                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      required
-                      aria-required="true"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="salary" className="block text-gray-700 mb-2 font-medium">
-                      Salary
-                    </label>
-                    <input
-                      type="number"
-                      id="salary"
-                      value={form.salary}
-                      onChange={(e) => setForm({ ...form, salary: Number(e.target.value) })}
-                      className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      required
-                      min="1"
-                      aria-required="true"
-                      placeholder="Enter salary"
-                    />
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="name" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
+                    required
+                    aria-required="true"
+                    placeholder="Enter name"
+                  />
                 </div>
-                <div className="flex justify-end gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
-                  >
-                    {editId ? 'Update' : 'Create'}
-                  </button>
+                <div>
+                  <label htmlFor="email" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
+                    required
+                    aria-required="true"
+                    placeholder="Enter email"
+                  />
                 </div>
-              </form>
+                <div>
+                  <label htmlFor="position" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                    Position
+                  </label>
+                  <input
+                    type="text"
+                    id="position"
+                    value={form.position}
+                    onChange={(e) => setForm({ ...form, position: e.target.value })}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
+                    required
+                    aria-required="true"
+                    placeholder="Enter position"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="joining_date" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                    Joining Date
+                  </label>
+                  <input
+                    type="date"
+                    id="joining_date"
+                    value={form.joining_date}
+                    onChange={(e) => setForm({ ...form, joining_date: e.target.value })}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
+                    required
+                    aria-required="true"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="salary" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                    Salary
+                  </label>
+                  <input
+                    type="number"
+                    id="salary"
+                    value={form.salary}
+                    onChange={(e) => setForm({ ...form, salary: Number(e.target.value) })}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
+                    required
+                    min="1"
+                    aria-required="true"
+                    placeholder="Enter salary"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
+                >
+                  Update
+                </button>
+              </div>
             </div>
           </div>
         )}

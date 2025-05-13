@@ -44,7 +44,7 @@ const AdminManagement = () => {
     return '';
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -91,16 +91,18 @@ const AdminManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-100 p-6">
+    <div className="min-h-screen bg-gradient-radial dark:bg-dark-gradient p-6 font-inter">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-primary-500 mb-6">Manage Admins</h1>
+        <h1 className="text-3xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+          Manage Admins
+        </h1>
         {error && (
-          <p className="text-red-500 mb-4 bg-red-100 p-3 rounded-lg" role="alert">
+          <p className="text-red-500 mb-4 bg-red-100 dark:bg-red-900 p-3 rounded-lg" role="alert">
             {error}
           </p>
         )}
         {success && (
-          <p className="text-primary-500 mb-4 bg-primary-100 p-3 rounded-lg" role="alert">
+          <p className="text-primary-500 dark:text-primary-100 mb-4 bg-primary-100 dark:bg-dark-700 p-3 rounded-lg" role="alert">
             {success}
           </p>
         )}
@@ -110,11 +112,11 @@ const AdminManagement = () => {
             setEditId(null);
             setIsModalOpen(true);
           }}
-          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300"
+          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-lg hover:shadow-neon"
         >
           Create Admin
         </button>
-        <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+        <div className="bg-white dark:bg-dark-800 rounded-lg shadow-lg overflow-x-auto transform hover:scale-101 transition-transform duration-300">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-primary-500 text-white">
@@ -125,20 +127,22 @@ const AdminManagement = () => {
             </thead>
             <tbody>
               {admins.map((admin) => (
-                <tr key={admin.id} className="hover:bg-primary-100 transition-colors duration-200">
-                  <td className="p-3 border-b">{admin.email}</td>
-                  <td className="p-3 border-b">{new Date(admin.created_at).toLocaleString()}</td>
+                <tr key={admin.id} className="hover:bg-primary-100 dark:hover:bg-dark-700 transition-colors duration-200">
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{admin.email}</td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">
+                    {new Date(admin.created_at).toLocaleString()}
+                  </td>
                   <td className="p-3 border-b">
                     <button
                       onClick={() => handleEdit(admin)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300"
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                       aria-label={`Edit ${admin.email}`}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(admin.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                       aria-label={`Delete ${admin.email}`}
                     >
                       Delete
@@ -151,13 +155,13 @@ const AdminManagement = () => {
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h2 className="text-2xl font-bold text-primary-500 mb-4">
+            <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg w-full max-w-md border-l-4 border-primary-500">
+              <h2 className="text-2xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-4">
                 {editId ? 'Update Admin' : 'Create Admin'}
               </h2>
-              <form onSubmit={handleSubmit}>
+              <div>
                 <div className="mb-4">
-                  <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="email" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Email
                   </label>
                   <input
@@ -165,14 +169,14 @@ const AdminManagement = () => {
                     id="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                     placeholder="Enter email"
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="password" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="password" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Password {editId && '(optional)'}
                   </label>
                   <input
@@ -180,7 +184,7 @@ const AdminManagement = () => {
                     id="password"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required={!editId}
                     placeholder="Enter password"
                   />
@@ -189,18 +193,18 @@ const AdminManagement = () => {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                   >
                     Cancel
                   </button>
                   <button
-                    type="submit"
-                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
+                    onClick={handleSubmit}
+                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                   >
                     {editId ? 'Update' : 'Create'}
                   </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         )}

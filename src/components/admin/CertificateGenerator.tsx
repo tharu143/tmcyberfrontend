@@ -36,7 +36,7 @@ const CertificateGenerator = () => {
   const fetchEmployees = async () => {
     try {
       const data = await getEmployees();
-      setEmployees(data.map((emp: any) => ({ id: emp.id, name: emp.name })));
+      setEmployees(data.map((emp) => ({ id: emp.id, name: emp.name })));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch employees');
     }
@@ -64,10 +64,10 @@ const CertificateGenerator = () => {
     const contentWidth = pageWidth - 2 * margin;
 
     // Background and Border
-    doc.setFillColor(245, 245, 245); // Light gray background
+    doc.setFillColor(245, 245, 245);
     doc.rect(0, 0, pageWidth, pageHeight, 'F');
     doc.setLineWidth(1);
-    doc.setDrawColor(34, 197, 94); // primary-500 green
+    doc.setDrawColor(34, 197, 94);
     doc.rect(margin, margin, contentWidth, pageHeight - 2 * margin, 'S');
 
     // Inner decorative border
@@ -75,7 +75,7 @@ const CertificateGenerator = () => {
     doc.setDrawColor(100, 100, 100);
     doc.rect(margin + 5, margin + 5, contentWidth - 10, pageHeight - 2 * margin - 10, 'S');
 
-    // Logo Placeholder (replace with actual image if available)
+    // Logo Placeholder
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
     doc.text('[Company Logo]', pageWidth / 2, margin + 20, { align: 'center' });
@@ -83,7 +83,7 @@ const CertificateGenerator = () => {
     // Header
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(24);
-    doc.setTextColor(34, 197, 94); // primary-500 green
+    doc.setTextColor(34, 197, 94);
     doc.text('Certificate of Achievement', pageWidth / 2, margin + 50, { align: 'center' });
 
     // Horizontal Line
@@ -128,31 +128,35 @@ const CertificateGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-100 p-6">
+    <div className="min-h-screen bg-gradient-radial dark:bg-dark-gradient p-6 font-inter">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-primary-500 mb-6">Generate Certificate</h1>
+        <h1 className="text-3xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+          Generate Certificate
+        </h1>
         {error && (
-          <p className="text-red-500 mb-4 bg-red-100 p-3 rounded-lg" role="alert">
+          <p className="text-red-500 mb-4 bg-red-100 dark:bg-red-900 p-3 rounded-lg" role="alert">
             {error}
           </p>
         )}
         {success && (
-          <p className="text-primary-500 mb-4 bg-primary-100 p-3 rounded-lg" role="alert">
+          <p className="text-primary-500 dark:text-primary-100 mb-4 bg-primary-100 dark:bg-dark-700 p-3 rounded-lg" role="alert">
             {success}
           </p>
         )}
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto transform transition-all hover:scale-105">
-          <h2 className="text-2xl font-bold text-primary-500 mb-6">Certificate Details</h2>
+        <div className="bg-white dark:bg-dark-800 p-8 rounded-lg shadow-neon max-w-lg mx-auto transform transition-all hover:scale-105 border-l-4 border-primary-500">
+          <h2 className="text-2xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+            Certificate Details
+          </h2>
           <div className="grid grid-cols-1 gap-4 mb-6">
             <div>
-              <label htmlFor="employee_id" className="block text-gray-700 mb-2 font-medium">
+              <label htmlFor="employee_id" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                 Employee
               </label>
               <select
                 id="employee_id"
                 value={form.employee_id}
                 onChange={(e) => setForm({ ...form, employee_id: e.target.value })}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                 required
                 aria-required="true"
               >
@@ -165,7 +169,7 @@ const CertificateGenerator = () => {
               </select>
             </div>
             <div>
-              <label htmlFor="certificate_name" className="block text-gray-700 mb-2 font-medium">
+              <label htmlFor="certificate_name" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                 Certificate Name
               </label>
               <input
@@ -173,14 +177,14 @@ const CertificateGenerator = () => {
                 id="certificate_name"
                 value={form.certificate_name}
                 onChange={(e) => setForm({ ...form, certificate_name: e.target.value })}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                 required
                 aria-required="true"
                 placeholder="e.g., Employee of the Month"
               />
             </div>
             <div>
-              <label htmlFor="issue_date" className="block text-gray-700 mb-2 font-medium">
+              <label htmlFor="issue_date" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                 Issue Date
               </label>
               <input
@@ -188,13 +192,13 @@ const CertificateGenerator = () => {
                 id="issue_date"
                 value={form.issue_date}
                 onChange={(e) => setForm({ ...form, issue_date: e.target.value })}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                 required
                 aria-required="true"
               />
             </div>
             <div>
-              <label htmlFor="signatory_name" className="block text-gray-700 mb-2 font-medium">
+              <label htmlFor="signatory_name" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                 Signatory Name
               </label>
               <input
@@ -202,7 +206,7 @@ const CertificateGenerator = () => {
                 id="signatory_name"
                 value={form.signatory_name}
                 onChange={(e) => setForm({ ...form, signatory_name: e.target.value })}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                 required
                 aria-required="true"
                 placeholder="e.g., John Doe, CEO"
@@ -213,21 +217,21 @@ const CertificateGenerator = () => {
             <button
               type="button"
               onClick={() => navigate('/admin/dashboard')}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300"
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handlePreview}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-300"
+              className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
             >
               Preview
             </button>
             <button
               type="button"
               onClick={generateCertificate}
-              className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300"
+              className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
             >
               Generate PDF
             </button>
@@ -235,33 +239,37 @@ const CertificateGenerator = () => {
         </div>
         {isPreviewOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-              <h2 className="text-2xl font-bold text-primary-500 mb-6">Certificate Preview</h2>
-              <div className="border border-gray-300 p-6 rounded-lg bg-gray-50">
-                <h3 className="text-xl font-bold text-primary-500 text-center mb-4">
+            <div className="bg-white dark:bg-dark-800 p-8 rounded-lg shadow-lg max-w-lg w-full border-l-4 border-primary-500">
+              <h2 className="text-2xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+                Certificate Preview
+              </h2>
+              <div className="border border-gray-300 dark:border-gray-600 p-6 rounded-lg bg-gray-50 dark:bg-dark-700">
+                <h3 className="text-xl font-poppins font-bold text-primary-500 dark:text-primary-100 text-center mb-4">
                   Certificate of Achievement
                 </h3>
-                <p className="text-center mb-2">
+                <p className="text-center mb-2 text-gray-700 dark:text-gray-300">
                   Awarded to: {employees.find((emp) => emp.id === form.employee_id)?.name}
                 </p>
-                <p className="text-center mb-2">For: {form.certificate_name}</p>
-                <p className="text-center mb-2">
+                <p className="text-center mb-2 text-gray-700 dark:text-gray-300">For: {form.certificate_name}</p>
+                <p className="text-center mb-2 text-gray-700 dark:text-gray-300">
                   Issued on: {new Date(form.issue_date).toLocaleDateString()}
                 </p>
-                <p className="mt-4">Authorized Signature: {form.signatory_name}</p>
+                <p className="mt-4 text-gray-700 dark:text-gray-300">
+                  Authorized Signature: {form.signatory_name}
+                </p>
               </div>
               <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsPreviewOpen(false)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   onClick={generateCertificate}
-                  className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
+                  className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                 >
                   Generate PDF
                 </button>

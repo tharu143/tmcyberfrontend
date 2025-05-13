@@ -49,7 +49,7 @@ const CertificateManagement = () => {
     return '';
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -101,16 +101,18 @@ const CertificateManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-100 p-6">
+    <div className="min-h-screen bg-gradient-radial dark:bg-dark-gradient p-6 font-inter">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-primary-500 mb-6">Manage Certificates</h1>
+        <h1 className="text-3xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-6">
+          Manage Certificates
+        </h1>
         {error && (
-          <p className="text-red-500 mb-4 bg-red-100 p-3 rounded-lg" role="alert">
+          <p className="text-red-500 mb-4 bg-red-100 dark:bg-red-900 p-3 rounded-lg" role="alert">
             {error}
           </p>
         )}
         {success && (
-          <p className="text-primary-500 mb-4 bg-primary-100 p-3 rounded-lg" role="alert">
+          <p className="text-primary-500 dark:text-primary-100 mb-4 bg-primary-100 dark:bg-dark-700 p-3 rounded-lg" role="alert">
             {success}
           </p>
         )}
@@ -120,11 +122,11 @@ const CertificateManagement = () => {
             setEditId(null);
             setIsModalOpen(true);
           }}
-          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300"
+          className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-lg hover:shadow-neon"
         >
           Create Certificate
         </button>
-        <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+        <div className="bg-white dark:bg-dark-800 rounded-lg shadow-lg overflow-x-auto transform hover:scale-101 transition-transform duration-300">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-primary-500 text-white">
@@ -137,22 +139,26 @@ const CertificateManagement = () => {
             </thead>
             <tbody>
               {certificates.map((certificate) => (
-                <tr key={certificate.id} className="hover:bg-primary-100 transition-colors duration-200">
-                  <td className="p-3 border-b">{certificate.name}</td>
-                  <td className="p-3 border-b">{new Date(certificate.start_date).toLocaleDateString()}</td>
-                  <td className="p-3 border-b">{new Date(certificate.end_date).toLocaleDateString()}</td>
-                  <td className="p-3 border-b">{certificate.type}</td>
+                <tr key={certificate.id} className="hover:bg-primary-100 dark:hover:bg-dark-700 transition-colors duration-200">
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{certificate.name}</td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">
+                    {new Date(certificate.start_date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">
+                    {new Date(certificate.end_date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 border-b text-gray-700 dark:text-gray-300">{certificate.type}</td>
                   <td className="p-3 border-b">
                     <button
                       onClick={() => handleEdit(certificate)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300"
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                       aria-label={`Edit certificate ${certificate.name}`}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(certificate.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                       aria-label={`Delete certificate ${certificate.name}`}
                     >
                       Delete
@@ -165,13 +171,13 @@ const CertificateManagement = () => {
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h2 className="text-2xl font-bold text-primary-500 mb-4">
+            <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg w-full max-w-md border-l-4 border-primary-500">
+              <h2 className="text-2xl font-poppins font-bold text-primary-500 dark:text-primary-100 mb-4">
                 {editId ? 'Update Certificate' : 'Create Certificate'}
               </h2>
-              <form onSubmit={handleSubmit}>
+              <div>
                 <div className="mb-4">
-                  <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="name" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Certificate Name
                   </label>
                   <input
@@ -179,14 +185,14 @@ const CertificateManagement = () => {
                     id="name"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                     placeholder="Enter certificate name"
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="start_date" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="start_date" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Start Date
                   </label>
                   <input
@@ -194,13 +200,13 @@ const CertificateManagement = () => {
                     id="start_date"
                     value={form.start_date}
                     onChange={(e) => setForm({ ...form, start_date: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="end_date" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="end_date" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     End Date
                   </label>
                   <input
@@ -208,13 +214,13 @@ const CertificateManagement = () => {
                     id="end_date"
                     value={form.end_date}
                     onChange={(e) => setForm({ ...form, end_date: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="type" className="block text-gray-700 mb-2 font-medium">
+                  <label htmlFor="type" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Type
                   </label>
                   <input
@@ -222,7 +228,7 @@ const CertificateManagement = () => {
                     id="type"
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-dark-700 dark:border-gray-600 dark:text-white transition-all duration-300"
                     required
                     aria-required="true"
                     placeholder="Enter certificate type"
@@ -232,18 +238,18 @@ const CertificateManagement = () => {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                   >
                     Cancel
                   </button>
                   <button
-                    type="submit"
-                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
+                    onClick={handleSubmit}
+                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300 shadow-sm hover:shadow-neon"
                   >
                     {editId ? 'Update' : 'Create'}
                   </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         )}
