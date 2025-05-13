@@ -1,8 +1,8 @@
-const API_URL = (import.meta.env.VITE_API_URL || 'https://tmbackend.netlify.app/').replace(/\/+$/, '');
+const API_URL = (import.meta.env.VITE_API_URL || 'https://tmback.netlify.app').replace(/\/+$/, '');
 
 export async function login(email: string, password: string): Promise<void> {
   try {
-    const response = await fetch(`${API_URL}/api/auth/login`, {
+    const response = await fetch(`${API_URL}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -30,7 +30,7 @@ export async function isValidAdmin(): Promise<boolean> {
   if (!token) return false;
 
   try {
-    const response = await fetch(`${API_URL}/api/auth/verify`, {
+    const response = await fetch(`${API_URL}/api/verify`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
       credentials: 'include',
@@ -55,7 +55,7 @@ export async function getAdmins(): Promise<any[]> {
     throw new Error(data.error || 'Failed to fetch admins');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function createAdmin(email: string, password: string): Promise<any> {
@@ -74,7 +74,7 @@ export async function createAdmin(email: string, password: string): Promise<any>
     throw new Error(data.error || 'Failed to create admin');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function updateAdmin(id: string, email: string, password?: string): Promise<any> {
@@ -93,7 +93,7 @@ export async function updateAdmin(id: string, email: string, password?: string):
     throw new Error(data.error || 'Failed to update admin');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function deleteAdmin(id: string): Promise<void> {
@@ -122,7 +122,7 @@ export async function getEmployees(): Promise<any[]> {
     throw new Error(data.error || 'Failed to fetch employees');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function createEmployee(data: { name: string; email: string; position: string; joining_date: string; salary: number }): Promise<any> {
@@ -141,7 +141,7 @@ export async function createEmployee(data: { name: string; email: string; positi
     throw new Error(data.error || 'Failed to create employee');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function updateEmployee(id: string, data: { name: string; email: string; position: string; joining_date: string; salary: number }): Promise<any> {
@@ -160,7 +160,7 @@ export async function updateEmployee(id: string, data: { name: string; email: st
     throw new Error(data.error || 'Failed to update employee');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function deleteEmployee(id: string): Promise<void> {
@@ -189,7 +189,7 @@ export async function getAttendance(): Promise<any[]> {
     throw new Error(data.error || 'Failed to fetch attendance');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function createAttendance(data: { employee_id: string; date: string; status: string }): Promise<any> {
@@ -208,7 +208,7 @@ export async function createAttendance(data: { employee_id: string; date: string
     throw new Error(data.error || 'Failed to create attendance');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function updateAttendance(id: string, data: { employee_id: string; date: string; status: string }): Promise<any> {
@@ -227,7 +227,7 @@ export async function updateAttendance(id: string, data: { employee_id: string; 
     throw new Error(data.error || 'Failed to update attendance');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function deleteAttendance(id: string): Promise<void> {
@@ -256,7 +256,7 @@ export async function getTasks(): Promise<any[]> {
     throw new Error(data.error || 'Failed to fetch tasks');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function createTask(data: { employee_id: string; title: string; description: string; status: string; due_date: string }): Promise<any> {
@@ -275,7 +275,7 @@ export async function createTask(data: { employee_id: string; title: string; des
     throw new Error(data.error || 'Failed to create task');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function updateTask(id: string, data: { employee_id: string; title: string; description: string; status: string; due_date: string }): Promise<any> {
@@ -294,7 +294,7 @@ export async function updateTask(id: string, data: { employee_id: string; title:
     throw new Error(data.error || 'Failed to update task');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function deleteTask(id: string): Promise<void> {
@@ -323,7 +323,7 @@ export async function getCertificates(): Promise<any[]> {
     throw new Error(data.error || 'Failed to fetch certificates');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function createCertificate(data: { name: string; start_date: string; end_date: string; type: string }): Promise<any> {
@@ -342,7 +342,7 @@ export async function createCertificate(data: { name: string; start_date: string
     throw new Error(data.error || 'Failed to create certificate');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function updateCertificate(id: string, data: { name: string; start_date: string; end_date: string; type: string }): Promise<any> {
@@ -361,7 +361,7 @@ export async function updateCertificate(id: string, data: { name: string; start_
     throw new Error(data.error || 'Failed to update certificate');
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export async function deleteCertificate(id: string): Promise<void> {

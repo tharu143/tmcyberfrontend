@@ -1,64 +1,72 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../lib/db';
+import { login } from '../../api/index';
 
-const AdminLogin: React.FC = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
     try {
       await login(email, password);
       navigate('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Failed to login. Please check your network or try again later.');
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-        <div>
+    <div className="min-h-screen flex items-center justify-center bg-primary-100 p-4">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md transform transition-all hover:scale-105">
+        <h2 className="text-3xl font-bold text-center text-primary-500 mb-6">Admin Login</h2>
+        {error && (
+          <p className="text-red-500 mb-4 text-center bg-red-100 p-2 rounded" role="alert">
+            {error}
+          </p>
+        )}
+        <form onSubmit={handleSubmit} aria-labelledby="admin-login-form">
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
+              Email
+            </label>
             <input
               type="email"
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               required
-              disabled={loading}
+              aria-required="true"
+              placeholder="Enter your email"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-gray-700 mb-2 font-medium">
+              Password
+            </label>
             <input
               type="password"
+              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               required
-              disabled={loading}
+              aria-required="true"
+              placeholder="Enter your password"
             />
           </div>
           <button
-            onClick={handleSubmit}
-            className={`w-full p-2 rounded text-white ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
-            disabled={loading}
+            type="submit"
+            className="w-full bg-primary-500 text-white p-3 rounded-lg hover:bg-primary-600 transition-colors duration-300"
+            aria-label="Login"
           >
-            {loading ? 'Logging in...' : 'Login'}
+            Login
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

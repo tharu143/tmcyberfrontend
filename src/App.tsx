@@ -19,6 +19,8 @@ import EmployeeManagement from './components/admin/EmployeeManagement';
 import CertificateGenerator from './components/admin/CertificateGenerator';
 import TaskManagement from './components/admin/TaskManagement';
 import AttendanceManagement from './components/admin/AttendanceManagement';
+import CertificateManagement from './components/admin/CertificateManagement';
+import CreateEmployee from './components/admin/CreateEmployee'
 import PrivateRoute from './PrivateRoute';
 
 function App() {
@@ -65,9 +67,11 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/employees" element={<EmployeeManagement />} />
-            <Route path="/admin/certificates" element={<CertificateGenerator />} />
+            <Route path="/admin/certificate-generator" element={<CertificateGenerator />} />
+            <Route path="/admin/certificates" element={<CertificateManagement />} />
             <Route path="/admin/tasks" element={<TaskManagement />} />
             <Route path="/admin/attendance" element={<AttendanceManagement />} />
+            <Route path="/admin/employees/create" element={<CreateEmployee />} />
           </Route>
 
           {/* Redirect /admin to /admin/dashboard */}

@@ -1,25 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAttendance, createAttendance, updateAttendance, deleteAttendance, getEmployees, isValidAdmin } from '../../api/index';
+import { getCertificates, createCertificate, updateCertificate, deleteCertificate, isValidAdmin } from '../../api/index';
 
-interface Attendance {
+interface Certificate {
   id: string;
-  employee_id: string;
-  employee_name: string;
-  date: string;
-  status: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  type: string;
   created_at: string;
 }
 
-interface Employee {
-  id: string;
-  name: string;
-}
-
-const AttendanceManagement = () => {
-  const [attendance, setAttendance] = useState<Attendance[]>([]);
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [form, setForm] = useState({ employee_id: '', date: '', status: '' });
+const CertificateManagement = () => {
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [form, setForm] = useState({ name: '', start_date: '', end_date: '', type: '' });
   const [editId, setEditId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -32,26 +26,26 @@ const AttendanceManagement = () => {
       if (!isValid) {
         navigate('/admin/login');
       } else {
-        fetchData();
+        fetchCertificates();
       }
     };
     checkAuth();
   }, [navigate]);
 
-  const fetchData = async () => {
+  const fetchCertificates = async () => {
     try {
-      const [attendanceData, employeeData] = await Promise.all([getAttendance(), getEmployees()]);
-      setAttendance(attendanceData);
-      setEmployees(employeeData.map((emp: any) => ({ id: emp.id, name: emp.name })));
+      const data = await getCertificates();
+      setCertificates(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch data');
+      setError(err instanceof Error ? err.message : 'Failed to fetch certificates');
     }
   };
 
   const validateForm = () => {
-    if (!form.employee_id) return 'Employee is required';
-    if (!form.date) return 'Date is required';
-    if (!form.status) return 'Status is required';
+    if (!form.name.trim()) return 'Certificate name is required';
+    if (!form.start_date) return 'Start date is required';
+    if (!form.end_date) return 'End date is required';
+    if (!form.type.trim()) return 'Type is required';
     return '';
   };
 
@@ -68,39 +62,40 @@ const AttendanceManagement = () => {
 
     try {
       if (editId) {
-        await updateAttendance(editId, form);
-        setSuccess('Attendance updated successfully');
+        await updateCertificate(editId, form);
+        setSuccess('Certificate updated successfully');
       } else {
-        await createAttendance(form);
-        setSuccess('Attendance created successfully');
+        await createCertificate(form);
+        setSuccess('Certificate created successfully');
       }
-      setForm({ employee_id: '', date: '', status: '' });
+      setForm({ name: '', start_date: '', end_date: '', type: '' });
       setEditId(null);
       setIsModalOpen(false);
-      fetchData();
+      fetchCertificates();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Operation failed');
     }
   };
 
-  const handleEdit = (record: Attendance) => {
+  const handleEdit = (certificate: Certificate) => {
     setForm({
-      employee_id: record.employee_id,
-      date: record.date.split('T')[0],
-      status: record.status,
+      name: certificate.name,
+      start_date: certificate.start_date.split('T')[0],
+      end_date: certificate.end_date.split('T')[0],
+      type: certificate.type,
     });
-    setEditId(record.id);
+    setEditId(certificate.id);
     setIsModalOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this attendance record?')) {
+    if (window.confirm('Are you sure you want to delete this certificate?')) {
       try {
-        await deleteAttendance(id);
-        setSuccess('Attendance deleted successfully');
-        fetchData();
+        await deleteCertificate(id);
+        setSuccess('Certificate deleted successfully');
+        fetchCertificates();
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to delete attendance');
+        setError(err instanceof Error ? err.message : 'Failed to delete certificate');
       }
     }
   };
@@ -108,7 +103,7 @@ const AttendanceManagement = () => {
   return (
     <div className="min-h-screen bg-primary-100 p-6">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-primary-500 mb-6">Manage Attendance</h1>
+        <h1 className="text-3xl font-bold text-primary-500 mb-6">Manage Certificates</h1>
         {error && (
           <p className="text-red-500 mb-4 bg-red-100 p-3 rounded-lg" role="alert">
             {error}
@@ -121,42 +116,44 @@ const AttendanceManagement = () => {
         )}
         <button
           onClick={() => {
-            setForm({ employee_id: '', date: '', status: '' });
+            setForm({ name: '', start_date: '', end_date: '', type: '' });
             setEditId(null);
             setIsModalOpen(true);
           }}
           className="mb-6 bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-300"
         >
-          Create Attendance
+          Create Certificate
         </button>
         <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-primary-500 text-white">
-                <th className="p-3 text-left">Employee</th>
-                <th className="p-3 text-left">Date</th>
-                <th className="p-3 text-left">Status</th>
+                <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Start Date</th>
+                <th className="p-3 text-left">End Date</th>
+                <th className="p-3 text-left">Type</th>
                 <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {attendance.map((record) => (
-                <tr key={record.id} className="hover:bg-primary-100 transition-colors duration-200">
-                  <td className="p-3 border-b">{record.employee_name}</td>
-                  <td className="p-3 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                  <td className="p-3 border-b">{record.status}</td>
+              {certificates.map((certificate) => (
+                <tr key={certificate.id} className="hover:bg-primary-100 transition-colors duration-200">
+                  <td className="p-3 border-b">{certificate.name}</td>
+                  <td className="p-3 border-b">{new Date(certificate.start_date).toLocaleDateString()}</td>
+                  <td className="p-3 border-b">{new Date(certificate.end_date).toLocaleDateString()}</td>
+                  <td className="p-3 border-b">{certificate.type}</td>
                   <td className="p-3 border-b">
                     <button
-                      onClick={() => handleEdit(record)}
+                      onClick={() => handleEdit(certificate)}
                       className="bg-yellow-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-yellow-600 transition-colors duration-300"
-                      aria-label={`Edit attendance for ${record.employee_name}`}
+                      aria-label={`Edit certificate ${certificate.name}`}
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(record.id)}
+                      onClick={() => handleDelete(certificate.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-300"
-                      aria-label={`Delete attendance for ${record.employee_name}`}
+                      aria-label={`Delete certificate ${certificate.name}`}
                     >
                       Delete
                     </button>
@@ -170,60 +167,66 @@ const AttendanceManagement = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
               <h2 className="text-2xl font-bold text-primary-500 mb-4">
-                {editId ? 'Update Attendance' : 'Create Attendance'}
+                {editId ? 'Update Certificate' : 'Create Certificate'}
               </h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label htmlFor="employee_id" className="block text-gray-700 mb-2 font-medium">
-                    Employee
+                  <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">
+                    Certificate Name
                   </label>
-                  <select
-                    id="employee_id"
-                    value={form.employee_id}
-                    onChange={(e) => setForm({ ...form, employee_id: e.target.value })}
+                  <input
+                    type="text"
+                    id="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     required
                     aria-required="true"
-                  >
-                    <option value="">Select Employee</option>
-                    {employees.map((emp) => (
-                      <option key={emp.id} value={emp.id}>
-                        {emp.name}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Enter certificate name"
+                  />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="date" className="block text-gray-700 mb-2 font-medium">
-                    Date
+                  <label htmlFor="start_date" className="block text-gray-700 mb-2 font-medium">
+                    Start Date
                   </label>
                   <input
                     type="date"
-                    id="date"
-                    value={form.date}
-                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    id="start_date"
+                    value={form.start_date}
+                    onChange={(e) => setForm({ ...form, start_date: e.target.value })}
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     required
                     aria-required="true"
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="status" className="block text-gray-700 mb-2 font-medium">
-                    Status
+                  <label htmlFor="end_date" className="block text-gray-700 mb-2 font-medium">
+                    End Date
                   </label>
-                  <select
-                    id="status"
-                    value={form.status}
-                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                  <input
+                    type="date"
+                    id="end_date"
+                    value={form.end_date}
+                    onChange={(e) => setForm({ ...form, end_date: e.target.value })}
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     required
                     aria-required="true"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="Present">Present</option>
-                    <option value="Absent">Absent</option>
-                    <option value="Leave">Leave</option>
-                  </select>
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="type" className="block text-gray-700 mb-2 font-medium">
+                    Type
+                  </label>
+                  <input
+                    type="text"
+                    id="type"
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                    aria-required="true"
+                    placeholder="Enter certificate type"
+                  />
                 </div>
                 <div className="flex justify-end gap-4">
                   <button
@@ -249,4 +252,4 @@ const AttendanceManagement = () => {
   );
 };
 
-export default AttendanceManagement;
+export default CertificateManagement;
