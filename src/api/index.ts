@@ -376,3 +376,19 @@ export async function deleteCertificate(id: string): Promise<void> {
     throw new Error(data.error || 'Failed to delete certificate');
   }
 }
+export async function approveLicense(licenseNumber: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/license/approve`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ licenseNumber }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to approve license');
+  }
+}
