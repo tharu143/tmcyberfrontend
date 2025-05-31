@@ -377,6 +377,7 @@ export async function deleteCertificate(id: string): Promise<void> {
   }
 }
 // Licenses
+
 export async function getLicenses(): Promise<any[]> {
   const token = localStorage.getItem('admin_token');
   const response = await fetch(`${API_URL}/api/license/list`, {
