@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { isValidAdmin, logout, getEmployees, getAttendance, getTasks, getCertificates } from '../../api/index';
 import { Bar, Line, Doughnut, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement } from 'chart.js';
-import { Menu, X, Users, CheckCircle, Calendar, Award, Moon, Sun } from 'react-feather';
+import { Menu, X, Users, CheckCircle, Calendar, Award, Moon, Sun, Key } from 'react-feather';
 
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement);
 
@@ -52,13 +52,11 @@ const AdminDashboard = () => {
         getCertificates(),
       ]);
 
-      // Employee Data
       const active = employees.filter((emp) => emp.status === 'active').length;
       const inactive = employees.length - active;
       setEmployeeData({ active, inactive });
       setTotalEmployees(employees.length);
 
-      // Attendance Data (Last 7 days)
       const today = new Date();
       const last7Days = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(today);
@@ -71,13 +69,13 @@ const AdminDashboard = () => {
         return attendance.filter((record) => {
           try {
             const recordDate = new Date(record.date);
-            if (isNaN(recordDate.getTime())) return false; // Invalid date
+            if (isNaN(recordDate.getTime())) return false;
             return (
               recordDate.toISOString().split('T')[0] === date &&
               record.status === 'Present'
             );
           } catch {
-            return false; // Skip invalid dates
+            return false;
           }
         }).length;
       });
@@ -87,14 +85,12 @@ const AdminDashboard = () => {
         attendanceCounts.length > 0 ? attendanceCounts[attendanceCounts.length - 1] : 0
       );
 
-      // Task Data
       const pending = tasks.filter((task) => task.status === 'Pending').length;
       const inProgress = tasks.filter((task) => task.status === 'In Progress').length;
       const completed = tasks.filter((task) => task.status === 'Completed').length;
       setTaskData({ pending, inProgress, completed });
       setTotalTasks(tasks.length);
 
-      // Certificate Data
       const certificateTypes = certificates.reduce((acc, cert) => {
         acc[cert.type] = (acc[cert.type] || 0) + 1;
         return acc;
@@ -112,7 +108,6 @@ const AdminDashboard = () => {
     navigate('/admin/login');
   };
 
-  // Chart Data
   const employeeChartData = {
     labels: ['Active', 'Inactive'],
     datasets: [
@@ -174,11 +169,11 @@ const AdminDashboard = () => {
     { to: '/admin/tasks', title: 'Manage Tasks', icon: CheckCircle },
     { to: '/admin/certificates', title: 'Manage Certificates', icon: Award },
     { to: '/admin/certificate-generator', title: 'Generate Certificate', icon: Award },
+    { to: '/admin/licenses', title: 'Manage Licenses', icon: Key },
   ];
 
   return (
     <div className={`min-h-screen font-inter ${isDarkMode ? 'dark bg-dark-900' : 'bg-gradient-radial'}`}>
-      {/* Navbar */}
       <nav className="bg-primary-500 text-white p-4 shadow-md sticky top-0 z-50">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-4">
@@ -209,9 +204,7 @@ const AdminDashboard = () => {
         </div>
       </nav>
 
-      {/* Sidebar for Desktop, Drawer for Mobile */}
       <div className="flex">
-        {/* Sidebar */}
         <aside
           className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white dark:bg-dark-800 shadow-lg transform ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -240,7 +233,6 @@ const AdminDashboard = () => {
           </div>
         </aside>
 
-        {/* Overlay for mobile sidebar */}
         {isSidebarOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
@@ -248,7 +240,6 @@ const AdminDashboard = () => {
           ></div>
         )}
 
-        {/* Main Content */}
         <main className="flex-1 p-6 lg:ml-0">
           <div className="container mx-auto">
             {error && (
@@ -256,7 +247,6 @@ const AdminDashboard = () => {
                 {error}
               </p>
             )}
-            {/* Quick Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {[
                 { title: 'Total Employees', value: totalEmployees, icon: Users, color: 'primary-500' },
@@ -281,9 +271,7 @@ const AdminDashboard = () => {
               ))}
             </div>
 
-            {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Employee Bar Chart */}
               <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg transform hover:scale-102 transition-transform duration-300">
                 <h2 className="text-xl font-poppins font-semibold text-gray-800 dark:text-white mb-4">
                   Employee Statistics
@@ -304,7 +292,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Attendance Line Chart */}
               <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg transform hover:scale-102 transition-transform duration-300">
                 <h2 className="text-xl font-poppins font-semibold text-gray-800 dark:text-white mb-4">
                   Attendance Trend (Last 7 Days)
@@ -325,7 +312,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Task Doughnut Chart */}
               <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg transform hover:scale-102 transition-transform duration-300">
                 <h2 className="text-xl font-poppins font-semibold text-gray-800 dark:text-white mb-4">
                   Task Status Distribution
@@ -342,7 +328,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Certificate Pie Chart */}
               <div className="bg-white dark:bg-dark-800 p-6 rounded-lg shadow-lg transform hover:scale-102 transition-transform duration-300">
                 <h2 className="text-xl font-poppins font-semibold text-gray-800 dark:text-white mb-4">
                   Certificate Distribution
