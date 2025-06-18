@@ -180,8 +180,9 @@ const Contact = () => {
                 <div>
                   <h4 className="font-medium text-gray-800">Office Location</h4>
                   <p className="text-gray-600 mt-1">
-                    123 Tech Park, <br />
-                    Innovation District, <br />
+                    106,RC School Street, <br />
+                     Erasakkanayackanur,  <br />
+                     Theni, <br/>
                     Tamil Nadu, India
                   </p>
                 </div>
