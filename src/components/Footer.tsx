@@ -22,10 +22,10 @@ const Footer: React.FC = () => {
               <a href="https://twitter.com" className="text-white hover:text-gray-300 transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="https://linkedin.com" className="text-white hover:text-gray-300 transition-colors">
+              <a href="https://www.linkedin.com/in/tharun-kumar-k-a76185252?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" className="text-white hover:text-gray-300 transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="https://instagram.com" className="text-white hover:text-gray-300 transition-colors">
+              <a href="https://www.instagram.com/tm_cyber_tech/profilecard/?igsh=bXN1bGo0am1waDYw" className="text-white hover:text-gray-300 transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
               <li className="text-gray-300">WhatsApp: +91 9751846484</li>
               <li className="text-gray-300">Email: tmcybertech.in@proton.me</li>
               <li className="text-gray-300">
-                123 Tech Park, Innovation District, Tamil Nadu, India
+                106,RC School Street, Erasakkanayackanur, Theni, Tamil Nadu, India
               </li>
             </ul>
           </div>

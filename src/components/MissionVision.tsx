@@ -15,7 +15,7 @@ const MissionVision: React.FC = () => {
           {/* Chessboard Image */}
           <div className="relative h-80 lg:h-96">
             <img
-              src="https://images.pexels.com/photos/1048248/pexels-photo-1048248.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+              src="https://www.freepik.com/free-vector/business-mission-concept-illustration_18953908.htm#fromView=search&page=1&position=28&uuid=ed313343-da0a-4470-ac01-0aa457c832f6&query=mission"
               alt="Chessboard with Queen Attacking"
               className="w-full h-full object-cover rounded-lg shadow-md"
             />

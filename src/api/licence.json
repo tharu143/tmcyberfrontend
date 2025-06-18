@@ -1,0 +1,23 @@
+[
+  {
+    "licenseNumber": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "John Doe",
+    "deviceId": "device123",
+    "isApproved": false,
+    "createdAt": "2025-05-31T10:00:00.000Z"
+  },
+  {
+    "licenseNumber": "123e4567-e89b-12d3-a456-426614174001",
+    "name": "Jane Smith",
+    "deviceId": "device456",
+    "isApproved": true,
+    "createdAt": "2025-05-30T15:30:00.000Z"
+  },
+  {
+    "licenseNumber": "123e4567-e89b-12d3-a456-426614174002",
+    "name": "Alice Johnson",
+    "deviceId": "device789",
+    "isApproved": false,
+    "createdAt": "2025-05-29T09:00:00.000Z"
+  }
+]
