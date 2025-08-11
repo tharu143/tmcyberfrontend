@@ -23,7 +23,7 @@ import CertificateManagement from './components/admin/CertificateManagement';
 import CreateEmployee from './components/admin/CreateEmployee';
 import LicenseManagement from './components/admin/LicenseManagement';
 import InvoiceGenerator from './components/admin/InvoiceGenerator';
-import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './PrivateRoute';
 
 const App: React.FC = () => {
   useEffect(() => {
