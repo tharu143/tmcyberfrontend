@@ -130,7 +130,7 @@ const SelectItem: React.FC<{ value: string; children: React.ReactNode }> = ({ va
 );
 
 const InvoiceGenerator: React.FC = () => {
-  const [theme, setTheme] = useState<'gold' | 'blue'>('gold');
+  const [theme, setTheme] = useState<'gold' | 'blue' | 'green'>('gold');
   const [formData, setFormData] = useState<FormData>({
     documentType: 'invoice',
     companyName: '',
@@ -150,6 +150,7 @@ const InvoiceGenerator: React.FC = () => {
     logo: null,
     taxPercentage: 0,
   });
+  const [customType, setCustomType] = useState<{ [key: number]: string }>({});
 
   const previewRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -174,6 +175,24 @@ const InvoiceGenerator: React.FC = () => {
     }));
   };
 
+  const handleTypeChange = (itemId: number, value: string) => {
+    if (value === 'Custom') {
+      setCustomType((prev) => ({ ...prev, [itemId]: '' }));
+    } else {
+      setCustomType((prev) => {
+        const newCustomType = { ...prev };
+        delete newCustomType[itemId];
+        return newCustomType;
+      });
+      updateItem(itemId, 'type', value);
+    }
+  };
+
+  const handleCustomTypeChange = (itemId: number, value: string) => {
+    setCustomType((prev) => ({ ...prev, [itemId]: value }));
+    updateItem(itemId, 'type', value);
+  };
+
   const addItem = () => {
     setFormData((prevState) => ({
       ...prevState,
@@ -186,6 +205,11 @@ const InvoiceGenerator: React.FC = () => {
       ...prevState,
       items: prevState.items.filter((item) => item.id !== itemId),
     }));
+    setCustomType((prev) => {
+      const newCustomType = { ...prev };
+      delete newCustomType[itemId];
+      return newCustomType;
+    });
   };
 
   const clearForm = () => {
@@ -208,6 +232,7 @@ const InvoiceGenerator: React.FC = () => {
       logo: null,
       taxPercentage: 0,
     });
+    setCustomType({});
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -279,17 +304,24 @@ const InvoiceGenerator: React.FC = () => {
   const taxAmount = subtotal * (formData.taxPercentage / 100);
   const grandTotal = subtotal + taxAmount;
 
+  // Theme colors
+  const themeStyles = {
+    gold: { bg: 'bg-amber-500', text: 'text-amber-700', header: 'bg-amber-50', border: 'border-amber-500' },
+    blue: { bg: 'bg-blue-500', text: 'text-blue-700', header: 'bg-blue-50', border: 'border-blue-500' },
+    green: { bg: 'bg-green-500', text: 'text-green-700', header: 'bg-green-50', border: 'border-green-500' },
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between">
+          <div className="flex items-center gap-4 mb-4 sm:mb-0">
             <FileText className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               Invoice & Quotation Generator
             </h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
               <Button
                 onClick={() => updateFormData('documentType', 'invoice')}
@@ -313,48 +345,41 @@ const InvoiceGenerator: React.FC = () => {
               </Button>
             </div>
             <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-              <Button
-                onClick={() => setTheme('gold')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  theme === 'gold'
-                    ? 'bg-amber-500 text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Gold
-              </Button>
-              <Button
-                onClick={() => setTheme('blue')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  theme === 'blue'
-                    ? 'bg-blue-500 text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Blue
-              </Button>
+              {['gold', 'blue', 'green'].map((color) => (
+                <Button
+                  key={color}
+                  onClick={() => setTheme(color as 'gold' | 'blue' | 'green')}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors capitalize ${
+                    theme === color
+                      ? `${themeStyles[color].bg} text-white shadow-sm`
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  {color}
+                </Button>
+              ))}
             </div>
           </div>
         </div>
       </header>
-      <div className="flex h-[calc(100vh-80px)]">
-        <div className="w-full lg:w-1/2 bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 overflow-y-auto custom-scrollbar">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-80px)]">
+        <div className="w-full lg:w-1/2 bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 overflow-y-auto">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-0">
                 {formData.documentType === 'invoice' ? 'Invoice' : 'Quotation'} Details
               </h2>
               <Badge className="capitalize">{formData.documentType}</Badge>
             </div>
             <div className="space-y-6">
               <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Your Company Information</h3>
+                <h3 className="text-base sm:text-lg font-medium mb-4">Your Company Information</h3>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="logo">Company Logo (Optional)</Label>
                     <div className="mt-2 space-y-3">
                       {formData.logo ? (
-                        <div className="flex items-start gap-4">
+                        <div className="flex flex-col sm:flex-row items-start gap-4">
                           <div className="relative">
                             <img
                               src={formData.logo || 'https://placehold.co/96x96/E2E8F0/111827?text=Logo'}
@@ -380,7 +405,7 @@ const InvoiceGenerator: React.FC = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
                           <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
                             <Upload className="h-4 w-4 mr-2" />
                             Upload Logo
@@ -399,7 +424,7 @@ const InvoiceGenerator: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="companyName">Company Name</Label>
                       <Input
@@ -442,9 +467,9 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
               </Card>
               <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Client Information</h3>
+                <h3 className="text-base sm:text-lg font-medium mb-4">Client Information</h3>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="clientName">Client Name</Label>
                       <Input
@@ -477,9 +502,9 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
               </Card>
               <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Document Details</h3>
+                <h3 className="text-base sm:text-lg font-medium mb-4">Document Details</h3>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="projectName">Project Name</Label>
                       <Input
@@ -501,7 +526,7 @@ const InvoiceGenerator: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="date">Date</Label>
                       <Input
@@ -533,7 +558,7 @@ const InvoiceGenerator: React.FC = () => {
               </Card>
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium">Items / Services</h3>
+                  <h3 className="text-base sm:text-lg font-medium">Items / Services</h3>
                   <Button onClick={addItem}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Row
@@ -541,8 +566,8 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
                 <div className="space-y-3">
                   {formData.items.map((item, index) => (
-                    <div key={item.id} className="grid grid-cols-12 gap-2 items-end">
-                      <div className="col-span-4">
+                    <div key={item.id} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end">
+                      <div className="sm:col-span-4">
                         {index === 0 && <Label className="text-xs text-gray-500 dark:text-gray-400">Description</Label>}
                         <Input
                           value={item.description}
@@ -550,11 +575,11 @@ const InvoiceGenerator: React.FC = () => {
                           placeholder="Service description"
                         />
                       </div>
-                      <div className="col-span-2">
+                      <div className="sm:col-span-2">
                         {index === 0 && <Label className="text-xs text-gray-500 dark:text-gray-400">Type</Label>}
                         <Select
-                          value={item.type}
-                          onValueChange={(value) => updateItem(item.id, 'type', value)}
+                          value={customType[item.id] ? 'Custom' : item.type || ''}
+                          onValueChange={(value) => handleTypeChange(item.id, value)}
                         >
                           <SelectTrigger>
                             <SelectValue />
@@ -566,10 +591,19 @@ const InvoiceGenerator: React.FC = () => {
                             <SelectItem value="UI/UX">UI/UX</SelectItem>
                             <SelectItem value="Consulting">Consulting</SelectItem>
                             <SelectItem value="Other">Other</SelectItem>
+                            <SelectItem value="Custom">Custom</SelectItem>
                           </SelectContent>
                         </Select>
+                        {customType[item.id] !== undefined && (
+                          <Input
+                            value={customType[item.id]}
+                            onChange={(e) => handleCustomTypeChange(item.id, e.target.value)}
+                            placeholder="Enter custom type"
+                            className="mt-2"
+                          />
+                        )}
                       </div>
-                      <div className="col-span-2">
+                      <div className="sm:col-span-2">
                         {index === 0 && <Label className="text-xs text-gray-500 dark:text-gray-400">Hours</Label>}
                         <Input
                           type="number"
@@ -580,7 +614,7 @@ const InvoiceGenerator: React.FC = () => {
                           step="0.5"
                         />
                       </div>
-                      <div className="col-span-2">
+                      <div className="sm:col-span-2">
                         {index === 0 && <Label className="text-xs text-gray-500 dark:text-gray-400">Rate/Hour</Label>}
                         <Input
                           type="number"
@@ -591,7 +625,7 @@ const InvoiceGenerator: React.FC = () => {
                           step="0.01"
                         />
                       </div>
-                      <div className="col-span-1">
+                      <div className="sm:col-span-1">
                         {index === 0 && <Label className="text-xs text-gray-500 dark:text-gray-400">Amount</Label>}
                         <Input
                           type="number"
@@ -600,7 +634,7 @@ const InvoiceGenerator: React.FC = () => {
                           className="bg-gray-50 dark:bg-gray-800"
                         />
                       </div>
-                      <div className="col-span-1">
+                      <div className="sm:col-span-1">
                         {index === 0 && <div className="h-4"></div>}
                         <Button
                           onClick={() => removeItem(item.id)}
@@ -615,7 +649,7 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
               </Card>
               <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Totals</h3>
+                <h3 className="text-base sm:text-lg font-medium mb-4">Totals</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span>Subtotal:</span>
@@ -643,9 +677,7 @@ const InvoiceGenerator: React.FC = () => {
                     </span>
                   </div>
                   <div
-                    className={`flex justify-between text-lg font-bold pt-2 border-t-2 ${
-                      theme === 'gold' ? 'border-amber-500 text-amber-700' : 'border-blue-500 text-blue-700'
-                    }`}
+                    className={`flex justify-between text-lg font-bold pt-2 border-t-2 ${themeStyles[theme].border} ${themeStyles[theme].text}`}
                   >
                     <span>Grand Total:</span>
                     <span>
@@ -656,7 +688,7 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
               </Card>
               <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Additional Information</h3>
+                <h3 className="text-base sm:text-lg font-medium mb-4">Additional Information</h3>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="notes">Notes / Terms</Label>
@@ -683,11 +715,13 @@ const InvoiceGenerator: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="hidden lg:block w-1/2 bg-gray-100 dark:bg-gray-900 overflow-y-auto custom-scrollbar">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6 no-print">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Preview</h2>
-              <div className="flex gap-2">
+        <div className="w-full lg:w-1/2 bg-gray-100 dark:bg-gray-900 overflow-y-auto">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-6 no-print">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-0">
+                Preview
+              </h2>
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button onClick={exportToPDF}>
                   <Download className="h-4 w-4 mr-2" />
                   PDF
@@ -703,9 +737,9 @@ const InvoiceGenerator: React.FC = () => {
               </div>
             </div>
             <Card className="bg-white dark:bg-gray-800 min-h-[800px] shadow-lg">
-              <div ref={previewRef} className="p-8 space-y-6">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
+              <div ref={previewRef} className="p-6 sm:p-8 space-y-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start">
+                  <div className="space-y-2 mb-4 sm:mb-0">
                     {formData.logo && (
                       <div className="w-24 h-24 mb-4">
                         <img
@@ -716,7 +750,7 @@ const InvoiceGenerator: React.FC = () => {
                       </div>
                     )}
                     <div>
-                      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                         {formData.companyName || 'Your Company Name'}
                       </h1>
                       {formData.companyAddress && (
@@ -730,11 +764,9 @@ const InvoiceGenerator: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <h2
-                      className={`text-3xl font-bold uppercase tracking-wide ${
-                        theme === 'gold' ? 'text-amber-600' : 'text-blue-600'
-                      }`}
+                      className={`text-2xl sm:text-3xl font-bold uppercase tracking-wide ${themeStyles[theme].text}`}
                     >
                       {formData.documentType}
                     </h2>
@@ -752,8 +784,8 @@ const InvoiceGenerator: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className={`h-1 ${theme === 'gold' ? 'bg-amber-500' : 'bg-blue-500'} rounded`}></div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className={`h-1 ${themeStyles[theme].bg} rounded`}></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Bill To:</h3>
                     <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
@@ -773,9 +805,9 @@ const InvoiceGenerator: React.FC = () => {
                 </div>
                 <div className="space-y-4">
                   <h3 className="font-semibold text-gray-900 dark:text-white">Items / Services:</h3>
-                  <div className="overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg">
-                    <table className="w-full">
-                      <thead className={`${theme === 'gold' ? 'bg-amber-50' : 'bg-blue-50'}`}>
+                  <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <table className="w-full min-w-[600px]">
+                      <thead className={`${themeStyles[theme].header}`}>
                         <tr>
                           <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 dark:text-white">
                             Description
@@ -842,9 +874,7 @@ const InvoiceGenerator: React.FC = () => {
                       </div>
                     )}
                     <div
-                      className={`flex justify-between text-lg font-bold pt-2 border-t-2 ${
-                        theme === 'gold' ? 'border-amber-500 text-amber-700' : 'border-blue-500 text-blue-700'
-                      }`}
+                      className={`flex justify-between text-lg font-bold pt-2 border-t-2 ${themeStyles[theme].border} ${themeStyles[theme].text}`}
                     >
                       <span>Total:</span>
                       <span>
@@ -880,9 +910,7 @@ const InvoiceGenerator: React.FC = () => {
                 )}
                 <div className="pt-8 text-center">
                   <div
-                    className={`text-sm ${
-                      theme === 'gold' ? 'text-amber-600' : 'text-blue-600'
-                    } font-medium`}
+                    className={`text-sm ${themeStyles[theme].text} font-medium`}
                   >
                     Thank you for your business!
                   </div>
