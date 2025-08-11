@@ -1,10 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Bar, Line, Doughnut, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement } from 'chart.js';
 import { Menu, X, Users, CheckCircle, Calendar, Award, Moon, Sun, Key, FileText } from 'lucide-react';
 import { Card, Button, Badge } from '../ui/shadcn-components';
-import PrivateRoute from '../PrivateRoute';
+import PrivateRoute from '../../PrivateRoute';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement);
