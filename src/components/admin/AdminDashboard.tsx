@@ -48,7 +48,7 @@ interface NavItem {
 // Mock API
 const api = {
   isValidAdmin: async (): Promise<boolean> => true,
-  logout: async (): Promise<void> => {},
+  logout: async (): Promise<void> => { },
   getEmployees: async (): Promise<Employee[]> => [
     { status: 'active' },
     { status: 'inactive' },
@@ -232,7 +232,7 @@ const AdminDashboard: React.FC = () => {
     { to: '/admin/certificates', title: 'Manage Certificates', icon: Award },
     { to: '/admin/certificate-generator', title: 'Generate Certificate', icon: Award },
     { to: '/admin/licenses', title: 'Manage Licenses', icon: Key },
-    { to: '/admin/invoice-generator', title: 'Invoice/Quotation', icon: FileText },
+    { to: '/admin/invoices', title: 'Invoice/Quotation', icon: FileText },
   ];
 
   return (
@@ -268,9 +268,8 @@ const AdminDashboard: React.FC = () => {
       </nav>
       <div className="flex">
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 shadow-lg transform ${
-            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
         >
           <div className="p-6">
             <h2 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-6">Navigation</h2>
