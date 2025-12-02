@@ -409,3 +409,85 @@ export async function approveLicense(licenseNumber: string): Promise<void> {
     throw new Error(data.error || 'Failed to approve license');
   }
 }
+
+// Invoices CRUD
+export async function getInvoices(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/invoices`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch invoices');
+  }
+
+  return await response.json();
+}
+
+export async function getInvoiceById(id: string): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/invoices/${id}`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch invoice');
+  }
+
+  return await response.json();
+}
+
+export async function createInvoice(data: any): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/invoices`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create invoice');
+  }
+
+  return await response.json();
+}
+
+export async function updateInvoice(id: string, data: any): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/invoices/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update invoice');
+  }
+
+  return await response.json();
+}
+
+export async function deleteInvoice(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/invoices/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete invoice');
+  }
+}

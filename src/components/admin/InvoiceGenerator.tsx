@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { FileText, Download, Printer, Trash2, Plus, Minus, Upload, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { FileText, Download, Printer, Trash2, Plus, Minus, Upload, X, Save, ArrowLeft } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createInvoice, getInvoiceById, updateInvoice } from '../../api';
 
 // Define interfaces for type safety
 interface Item {
@@ -46,7 +48,8 @@ const Button: React.FC<{
   onClick?: () => void;
   variant?: 'outline' | 'destructive';
   type?: 'button' | 'submit';
-}> = ({ children, className = '', onClick, variant, type = 'button' }) => {
+  disabled?: boolean;
+}> = ({ children, className = '', onClick, variant, type = 'button', disabled }) => {
   let style =
     'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2';
   if (variant === 'outline') {
@@ -57,7 +60,7 @@ const Button: React.FC<{
     style += ' bg-primary text-primary-foreground shadow hover:bg-primary/90';
   }
   return (
-    <button className={`${style} ${className}`} onClick={onClick} type={type}>
+    <button className={`${style} ${className}`} onClick={onClick} type={type} disabled={disabled}>
       {children}
     </button>
   );
@@ -130,6 +133,9 @@ const SelectItem: React.FC<{ value: string; children: React.ReactNode }> = ({ va
 );
 
 const InvoiceGenerator: React.FC = () => {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [loading, setLoading] = useState(false);
   const [theme, setTheme] = useState<'gold' | 'blue' | 'green'>('gold');
   const [formData, setFormData] = useState<FormData>({
     documentType: 'invoice',
@@ -154,6 +160,47 @@ const InvoiceGenerator: React.FC = () => {
 
   const previewRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (id) {
+      loadInvoice(id);
+    }
+  }, [id]);
+
+  const loadInvoice = async (invoiceId: string) => {
+    try {
+      setLoading(true);
+      const data = await getInvoiceById(invoiceId);
+      if (data.date) {
+        data.date = new Date(data.date).toISOString().split('T')[0];
+      }
+      setFormData(data);
+    } catch (error) {
+      console.error('Failed to load invoice:', error);
+      alert('Failed to load invoice details');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      if (id) {
+        await updateInvoice(id, formData);
+        alert('Invoice updated successfully!');
+      } else {
+        await createInvoice(formData);
+        alert('Invoice created successfully!');
+        navigate('/admin/invoices');
+      }
+    } catch (error) {
+      console.error('Failed to save invoice:', error);
+      alert('Failed to save invoice');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateFormData = (key: keyof FormData, value: any) => {
     setFormData((prevState) => ({ ...prevState, [key]: value }));
@@ -233,6 +280,7 @@ const InvoiceGenerator: React.FC = () => {
       taxPercentage: 0,
     });
     setCustomType({});
+    navigate('/admin/invoices/new');
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -316,30 +364,32 @@ const InvoiceGenerator: React.FC = () => {
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-4">
         <div className="flex flex-col sm:flex-row items-center justify-between">
           <div className="flex items-center gap-4 mb-4 sm:mb-0">
+            <Button variant="outline" onClick={() => navigate('/admin/invoices')}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
             <FileText className="h-8 w-8 text-blue-600" />
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              Invoice & Quotation Generator
+              {id ? 'Edit' : 'Create'} {formData.documentType === 'invoice' ? 'Invoice' : 'Quotation'}
             </h1>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
               <Button
                 onClick={() => updateFormData('documentType', 'invoice')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  formData.documentType === 'invoice'
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${formData.documentType === 'invoice'
                     ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 Invoice
               </Button>
               <Button
                 onClick={() => updateFormData('documentType', 'quotation')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  formData.documentType === 'quotation'
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${formData.documentType === 'quotation'
                     ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 Quotation
               </Button>
@@ -349,11 +399,10 @@ const InvoiceGenerator: React.FC = () => {
                 <Button
                   key={color}
                   onClick={() => setTheme(color as 'gold' | 'blue' | 'green')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors capitalize ${
-                    theme === color
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors capitalize ${theme === color
                       ? `${themeStyles[color].bg} text-white shadow-sm`
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   {color}
                 </Button>
@@ -722,6 +771,10 @@ const InvoiceGenerator: React.FC = () => {
                 Preview
               </h2>
               <div className="flex flex-col sm:flex-row gap-2">
+                <Button onClick={handleSave} disabled={loading}>
+                  <Save className="h-4 w-4 mr-2" />
+                  {loading ? 'Saving...' : 'Save'}
+                </Button>
                 <Button onClick={exportToPDF}>
                   <Download className="h-4 w-4 mr-2" />
                   PDF
@@ -798,83 +851,59 @@ const InvoiceGenerator: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Project:</h3>
-                    <div className="text-sm text-gray-700 dark:text-gray-300">
+                    <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
                       <div className="font-medium">{formData.projectName || 'Project Name'}</div>
                     </div>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Items / Services:</h3>
-                  <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
-                    <table className="w-full min-w-[600px]">
-                      <thead className={`${themeStyles[theme].header}`}>
-                        <tr>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 dark:text-white">
-                            Description
-                          </th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-900 dark:text-white">
-                            Type
-                          </th>
-                          <th className="px-4 py-3 text-right text-sm font-medium text-gray-900 dark:text-white">
-                            Hours
-                          </th>
-                          <th className="px-4 py-3 text-right text-sm font-medium text-gray-900 dark:text-white">
-                            Rate/Hour
-                          </th>
-                          <th className="px-4 py-3 text-right text-sm font-medium text-gray-900 dark:text-white">
-                            Amount
-                          </th>
+                <div className="mt-8">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className={`${themeStyles[theme].header} text-gray-900 dark:text-gray-100`}>
+                        <th className="py-2 px-4 font-semibold text-sm">Description</th>
+                        <th className="py-2 px-4 font-semibold text-sm">Type</th>
+                        <th className="py-2 px-4 font-semibold text-sm text-right">Hours</th>
+                        <th className="py-2 px-4 font-semibold text-sm text-right">Rate</th>
+                        <th className="py-2 px-4 font-semibold text-sm text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      {formData.items.map((item) => (
+                        <tr key={item.id} className="text-sm text-gray-700 dark:text-gray-300">
+                          <td className="py-2 px-4">{item.description}</td>
+                          <td className="py-2 px-4">{item.type}</td>
+                          <td className="py-2 px-4 text-right">{item.hours}</td>
+                          <td className="py-2 px-4 text-right">
+                            {formData.currency}
+                            {item.rate.toFixed(2)}
+                          </td>
+                          <td className="py-2 px-4 text-right">
+                            {formData.currency}
+                            {item.amount.toFixed(2)}
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {formData.items.map((item, index) => (
-                          <tr
-                            key={item.id}
-                            className={index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-900'}
-                          >
-                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                              {item.description || `Service ${index + 1}`}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                              {item.type}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white text-right">
-                              {item.hours}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white text-right">
-                              {formData.currency}
-                              {item.rate.toFixed(2)}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white text-right font-medium">
-                              {formData.currency}
-                              {item.amount.toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                <div className="flex justify-end">
-                  <div className="w-full max-w-sm space-y-2">
-                    <div className="flex justify-between text-sm">
+                <div className="flex justify-end mt-6">
+                  <div className="w-full sm:w-1/2 space-y-2">
+                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                       <span>Subtotal:</span>
-                      <span className="font-medium">
+                      <span>
                         {formData.currency}
                         {subtotal.toFixed(2)}
                       </span>
                     </div>
-                    {formData.taxPercentage > 0 && (
-                      <div className="flex justify-between text-sm">
-                        <span>Tax ({formData.taxPercentage}%):</span>
-                        <span className="font-medium">
-                          {formData.currency}
-                          {taxAmount.toFixed(2)}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                      <span>Tax ({formData.taxPercentage}%):</span>
+                      <span>
+                        {formData.currency}
+                        {taxAmount.toFixed(2)}
+                      </span>
+                    </div>
                     <div
-                      className={`flex justify-between text-lg font-bold pt-2 border-t-2 ${themeStyles[theme].border} ${themeStyles[theme].text}`}
+                      className={`flex justify-between text-lg font-bold border-t pt-2 ${themeStyles[theme].border} ${themeStyles[theme].text}`}
                     >
                       <span>Total:</span>
                       <span>
@@ -885,36 +914,25 @@ const InvoiceGenerator: React.FC = () => {
                   </div>
                 </div>
                 {(formData.notes || formData.paymentMethods) && (
-                  <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="mt-8 space-y-4 border-t border-gray-200 dark:border-gray-700 pt-6">
                     {formData.notes && (
                       <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                          Notes / Terms:
-                        </h3>
-                        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Notes:</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
                           {formData.notes}
-                        </div>
+                        </p>
                       </div>
                     )}
                     {formData.paymentMethods && (
                       <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                          Payment Information:
-                        </h3>
-                        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Payment Methods:</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
                           {formData.paymentMethods}
-                        </div>
+                        </p>
                       </div>
                     )}
                   </div>
                 )}
-                <div className="pt-8 text-center">
-                  <div
-                    className={`text-sm ${themeStyles[theme].text} font-medium`}
-                  >
-                    Thank you for your business!
-                  </div>
-                </div>
               </div>
             </Card>
           </div>
