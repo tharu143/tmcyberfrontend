@@ -327,40 +327,76 @@ const VerifyCertificate: React.FC = () => {
                 </div>
 
                 {/* Gold Embossed Seal/Stamp */}
-                <div className="relative flex items-center justify-center w-[100px] h-[100px] select-none">
+                <div className="relative flex items-center justify-center w-[110px] h-[110px] select-none">
                   
-                  {/* Jagged Gold Seal Container (custom SVG for realistic embossed serration) */}
-                  <svg viewBox="0 0 100 100" className="w-[102px] h-[102px] absolute drop-shadow-[0_4px_10px_rgba(160,120,30,0.4)] animate-pulse">
-                    <circle cx="50" cy="50" r="45" fill="url(#goldSealGrad)" stroke="#c5a02e" strokeWidth="0.5" />
+                  {/* Jagged Gold Seal Container (custom SVG for realistic embossed starburst serration) */}
+                  <svg viewBox="0 0 100 100" className="w-[112px] h-[112px] absolute drop-shadow-[0_4px_12px_rgba(160,120,30,0.5)] animate-pulse">
                     
-                    {/* Inner Gold ring */}
-                    <circle cx="50" cy="50" r="39" fill="none" stroke="#fff" strokeWidth="1" strokeDasharray="1,2" opacity="0.6" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#aa7c11" strokeWidth="0.5" opacity="0.7" />
-                    
-                    {/* Jagged circular outer edge simulated with circular dash */}
-                    <circle cx="50" cy="50" r="43.5" fill="none" stroke="url(#goldSealGrad)" strokeWidth="2.5" strokeDasharray="3,1.5" />
-                    
+                    {/* Definitions of premium gold metallic gradients and text paths */}
                     <defs>
                       <linearGradient id="goldSealGrad" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor="#f3e5ab" />
-                        <stop offset="20%" stopColor="#d4af37" />
-                        <stop offset="50%" stopColor="#aa7c11" />
-                        <stop offset="80%" stopColor="#d4af37" />
-                        <stop offset="100%" stopColor="#fbf5b7" />
+                        <stop offset="0%" stopColor="#fff7d6" />
+                        <stop offset="20%" stopColor="#e5c057" />
+                        <stop offset="40%" stopColor="#b8860b" />
+                        <stop offset="60%" stopColor="#fff8de" />
+                        <stop offset="85%" stopColor="#d4af37" />
+                        <stop offset="100%" stopColor="#966a06" />
                       </linearGradient>
+                      
+                      <linearGradient id="goldInnerGrad" x1="1" y1="1" x2="0" y2="0">
+                        <stop offset="0%" stopColor="#e5c057" />
+                        <stop offset="50%" stopColor="#b8860b" />
+                        <stop offset="100%" stopColor="#fff7d6" />
+                      </linearGradient>
+
+                      {/* Text Path for curving corporate name along the top */}
+                      <path id="topTextPath" d="M 17,50 A 33,33 0 1,1 83,50" fill="none" />
+                      
+                      {/* Text Path for curving verification text along the bottom */}
+                      <path id="bottomTextPath" d="M 83,50 A 33,33 0 1,1 17,50" fill="none" />
                     </defs>
+                    
+                    {/* 64-Point mathematically precise serration polygon (drawn statically for peak performance and print-safety) */}
+                    <polygon 
+                      points="50.00,4.00 48.97,8.08 47.93,4.10 46.88,8.15 45.83,4.25 44.77,8.28 43.70,4.45 42.64,8.45 41.56,4.71 40.50,8.68 39.42,4.99 38.35,8.96 37.26,5.39 36.19,9.30 35.10,5.80 34.02,9.70 32.93,6.30 31.85,10.15 30.76,6.86 29.69,10.66 28.59,7.50 27.53,11.23 26.43,8.21 25.37,11.85 24.28,8.99 23.23,12.53 22.14,9.83 21.11,13.26 20.02,10.74 19.01,14.05 17.93,11.71 16.94,14.88 15.87,12.74 14.90,15.77 13.84,13.83 12.91,16.70 11.87,14.97 10.97,17.68 9.94,16.16 9.08,18.70 8.09,17.40 7.27,19.75 6.30,18.68 5.53,20.85 4.60,19.99 3.88,21.97 2.99,21.34 2.32,23.11 1.48,22.71 0.87,24.27 0.09,24.11 -0.46,25.44 -1.18,25.53 -1.68,26.62 -2.33,26.96 -2.77,27.79 -3.36,28.38 -3.73,28.96 -4.26,29.80 -4.56,30.13 -5.02,31.21 -5.26,31.29 -5.65,32.61 -5.82,32.44 -6.14,33.99 -6.24,33.56 -6.49,35.34 -6.52,34.67 -6.71,36.65 -6.67,35.75 -6.79,37.91 -6.68,36.78 -6.74,39.11 -6.57,37.77 -6.56,40.26 -6.32,38.71 -6.25,41.34 -5.95,39.59 -5.81,42.34 -5.45,40.40 -5.26,43.27 -4.84,41.15 -4.58,44.11 -4.11,41.81 -3.80,44.87 -3.28,42.40 -2.92,45.54 -2.34,42.92 -1.93,46.12 -1.31,43.34 -0.86,46.60 -0.21,43.68 0.28,47.00"
+                      fill="url(#goldSealGrad)" 
+                      stroke="#aa7c11" 
+                      strokeWidth="0.5" 
+                    />
+                    
+                    {/* Inner gold circular embossed body */}
+                    <circle cx="50" cy="50" r="39" fill="url(#goldInnerGrad)" stroke="#fff" strokeWidth="0.75" opacity="0.9" />
+                    
+                    {/* Golden dotted ring inside the seal */}
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="#aa7c11" strokeWidth="1" strokeDasharray="1.5,1.5" opacity="0.8" />
+                    <circle cx="50" cy="50" r="31" fill="none" stroke="#fff" strokeWidth="0.5" opacity="0.5" />
+
+                    {/* Circular typography wrapped along path */}
+                    <text fontFamily="Montserrat" fontSize="4.5" fontWeight="bold" fill="#785303" letterSpacing="0.2">
+                      <textPath href="#topTextPath" startOffset="50%" textAnchor="middle">
+                        ★  TM CYBER TECH  ★
+                      </textPath>
+                    </text>
+                    
+                    <text fontFamily="Montserrat" fontSize="4" fontWeight="bold" fill="#8c6104" letterSpacing="0.1">
+                      <textPath href="#bottomTextPath" startOffset="50%" textAnchor="middle">
+                        OFFICIAL INTERNSHIP SEAL
+                      </textPath>
+                    </text>
+
+                    {/* Center Embossed Star Graphic */}
+                    <path 
+                      d="M 50,37 L 53,44 L 60,45 L 55,50 L 57,57 L 50,53 L 43,57 L 45,50 L 40,45 L 47,44 Z" 
+                      fill="url(#goldSealGrad)" 
+                      stroke="#8b6508" 
+                      strokeWidth="0.5" 
+                    />
                   </svg>
                   
-                  {/* Embossed inner text inside the stamp */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 z-10 pointer-events-none">
-                    <span className="font-cinzel text-[7.5px] font-bold text-[#6a4f0b] tracking-[0.1em] leading-tight">
-                      OFFICIAL
-                    </span>
-                    <span className="font-montserrat text-[5px] font-extrabold text-[#7c5c0c] tracking-[0.2em] leading-none my-0.5">
-                      SEAL
-                    </span>
-                    <span className="font-montserrat text-[4.5px] font-bold text-[#8b6508] tracking-[0.05em] scale-95 opacity-80">
-                      TMCYBERTECH
+                  {/* Fine metallic details overlay inside the center */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 z-10 pointer-events-none mt-10">
+                    <span className="font-montserrat text-[5px] font-extrabold text-[#785303] tracking-[0.2em] leading-none">
+                      PASSED
                     </span>
                   </div>
                 </div>
