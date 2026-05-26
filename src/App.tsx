@@ -20,6 +20,8 @@ import CertificateGenerator from './components/admin/CertificateGenerator';
 import TaskManagement from './components/admin/TaskManagement';
 import AttendanceManagement from './components/admin/AttendanceManagement';
 import CertificateManagement from './components/admin/CertificateManagement';
+import InternshipCertificateManagement from './components/admin/InternshipCertificateManagement';
+import VerifyCertificate from './components/VerifyCertificate';
 import CreateEmployee from './components/admin/CreateEmployee';
 import LicenseManagement from './components/admin/LicenseManagement';
 import InvoiceGenerator from './components/admin/InvoiceGenerator';
@@ -180,6 +182,7 @@ const App: React.FC = () => {
           <Route path="/contact" element={<div><Navbar /><Contact /><Footer /></div>} />
           <Route path="/process" element={<div><Navbar /><Process /><Footer /></div>} />
           <Route path="/app-privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/verify/:id" element={<VerifyCertificate />} />
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route element={<PrivateRoute />}>
@@ -187,6 +190,7 @@ const App: React.FC = () => {
             <Route path="/admin/employees" element={<EmployeeManagement />} />
             <Route path="/admin/certificate-generator" element={<CertificateGenerator />} />
             <Route path="/admin/certificates" element={<CertificateManagement />} />
+            <Route path="/admin/internship-certificates" element={<InternshipCertificateManagement />} />
             <Route path="/admin/tasks" element={<TaskManagement />} />
             <Route path="/admin/attendance" element={<AttendanceManagement />} />
             <Route path="/admin/employees/create" element={<CreateEmployee />} />

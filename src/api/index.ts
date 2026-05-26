@@ -491,3 +491,103 @@ export async function deleteInvoice(id: string): Promise<void> {
     throw new Error(data.error || 'Failed to delete invoice');
   }
 }
+
+// Internship Certificates CRUD & Public Verification
+export async function getInternshipCertificates(): Promise<any[]> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/internship-certificates`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to fetch internship certificates');
+  }
+
+  return await response.json();
+}
+
+export async function createInternshipCertificate(data: {
+  name: string;
+  start_date: string;
+  end_date: string;
+  domain: string;
+  company?: string;
+  contact?: string;
+  website?: string;
+}): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/internship-certificates`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to create internship certificate');
+  }
+
+  return await response.json();
+}
+
+export async function updateInternshipCertificate(
+  id: string,
+  data: {
+    name: string;
+    start_date: string;
+    end_date: string;
+    domain: string;
+    company?: string;
+    contact?: string;
+    website?: string;
+  }
+): Promise<any> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/internship-certificates/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to update internship certificate');
+  }
+
+  return await response.json();
+}
+
+export async function deleteInternshipCertificate(id: string): Promise<void> {
+  const token = localStorage.getItem('admin_token');
+  const response = await fetch(`${API_URL}/api/internship-certificates/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to delete internship certificate');
+  }
+}
+
+export async function getPublicInternshipCertificate(id: string): Promise<any> {
+  const response = await fetch(`${API_URL}/api/public/internship-certificates/${id}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || 'Failed to verify certificate');
+  }
+
+  return await response.json();
+}

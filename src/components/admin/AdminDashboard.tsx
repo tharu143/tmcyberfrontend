@@ -231,6 +231,7 @@ const AdminDashboard: React.FC = () => {
     { to: '/admin/tasks', title: 'Manage Tasks', icon: CheckCircle },
     { to: '/admin/certificates', title: 'Manage Certificates', icon: Award },
     { to: '/admin/certificate-generator', title: 'Generate Certificate', icon: Award },
+    { to: '/admin/internship-certificates', title: 'Internship Certificates', icon: Award },
     { to: '/admin/licenses', title: 'Manage Licenses', icon: Key },
     { to: '/admin/invoices', title: 'Invoice/Quotation', icon: FileText },
   ];
