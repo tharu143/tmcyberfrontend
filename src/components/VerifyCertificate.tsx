@@ -330,7 +330,7 @@ const VerifyCertificate: React.FC = () => {
                 <div className="relative flex items-center justify-center w-[110px] h-[110px] select-none">
                   
                   {/* Jagged Gold Seal Container (custom SVG for realistic embossed starburst serration) */}
-                  <svg viewBox="0 0 100 100" className="w-[112px] h-[112px] absolute drop-shadow-[0_4px_12px_rgba(160,120,30,0.5)] animate-pulse">
+                  <svg viewBox="0 0 100 100" className="w-[112px] h-[112px] absolute drop-shadow-[0_4px_12px_rgba(160,120,30,0.5)]">
                     
                     {/* Definitions of premium gold metallic gradients and text paths */}
                     <defs>
