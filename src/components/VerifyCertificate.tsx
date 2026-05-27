@@ -316,12 +316,19 @@ const VerifyCertificate: React.FC = () => {
                 </div>
 
                 {/* Signature Center */}
-                <div className="flex flex-col items-center w-[160px]">
-                  {/* Cursive Signature Font representation */}
-                  <span className="font-greatvibes text-[22px] text-[#334155] leading-none mb-1">
+                <div className="flex flex-col items-center w-[160px] relative">
+                  {/* Signature Image */}
+                  <div className="h-9 flex items-center justify-center mb-0.5">
+                    <img 
+                      src="/signature.png" 
+                      alt="Signature" 
+                      className="max-h-11 object-contain mix-blend-multiply opacity-95"
+                    />
+                  </div>
+                  <span className="font-montserrat text-[9px] font-bold text-[#334155] tracking-[0.05em] text-center w-full">
                     Tharun Kumar K
                   </span>
-                  <span className="font-montserrat text-[9px] font-bold text-[#94a3b8] tracking-[0.2em] uppercase border-t border-slate-200 w-full text-center pt-2">
+                  <span className="font-montserrat text-[7px] font-bold text-[#94a3b8] tracking-[0.2em] uppercase border-t border-slate-200 w-full text-center pt-1.5 mt-0.5">
                     AUTHORIZED SIGNATURE
                   </span>
                 </div>
