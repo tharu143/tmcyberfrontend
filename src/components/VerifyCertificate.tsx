@@ -318,7 +318,7 @@ const VerifyCertificate: React.FC = () => {
                 {/* Signature Center */}
                 <div className="flex flex-col items-center w-[160px]">
                   {/* Cursive Signature Font representation */}
-                  <span className="font-greatvibes text-[22px] text-[#334155] leading-none mb-1 rotate-[-2deg]">
+                  <span className="font-greatvibes text-[22px] text-[#334155] leading-none mb-1">
                     Tharun Kumar K
                   </span>
                   <span className="font-montserrat text-[9px] font-bold text-[#94a3b8] tracking-[0.2em] uppercase border-t border-slate-200 w-full text-center pt-2">
