@@ -316,16 +316,16 @@ const VerifyCertificate: React.FC = () => {
                 </div>
 
                 {/* Signature Center */}
-                <div className="flex flex-col items-center w-[160px] relative">
+                <div className="flex flex-col items-center w-[180px] relative">
                   {/* Signature Image */}
-                  <div className="h-9 flex items-center justify-center mb-0.5">
+                  <div className="h-12 flex items-center justify-center -mb-2">
                     <img 
                       src="/signature.png" 
                       alt="Signature" 
-                      className="max-h-11 object-contain mix-blend-multiply opacity-95"
+                      className="max-h-14 object-contain opacity-100 select-none"
                     />
                   </div>
-                  <span className="font-montserrat text-[9px] font-bold text-[#334155] tracking-[0.05em] text-center w-full">
+                  <span className="font-montserrat text-[9px] font-bold text-[#334155] tracking-[0.05em] text-center w-full relative z-10">
                     Tharun Kumar K
                   </span>
                   <span className="font-montserrat text-[7px] font-bold text-[#94a3b8] tracking-[0.2em] uppercase border-t border-slate-200 w-full text-center pt-1.5 mt-0.5">
