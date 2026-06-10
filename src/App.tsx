@@ -28,6 +28,7 @@ import InvoiceGenerator from './components/admin/InvoiceGenerator';
 import InvoiceList from './components/admin/InvoiceList';
 import PrivateRoute from './PrivateRoute';
 import logo from './assest/logo.png';
+import TharuFloraPrivacyPolicy from './components/TharuFloraPrivacyPolicy';
 
 const PrivacyPolicy: React.FC = () => {
   return (
@@ -182,6 +183,7 @@ const App: React.FC = () => {
           <Route path="/contact" element={<div><Navbar /><Contact /><Footer /></div>} />
           <Route path="/process" element={<div><Navbar /><Process /><Footer /></div>} />
           <Route path="/app-privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/tharuFloraprivacypolicy" element={<TharuFloraPrivacyPolicy />} />
           <Route path="/verify/:id" element={<VerifyCertificate />} />
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
