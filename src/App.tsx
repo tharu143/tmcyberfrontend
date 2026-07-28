@@ -29,6 +29,7 @@ import InvoiceList from './components/admin/InvoiceList';
 import PrivateRoute from './PrivateRoute';
 import logo from './assest/logo.png';
 import TharuFloraPrivacyPolicy from './components/TharuFloraPrivacyPolicy';
+import TharuHRPrivacyPolicy from './components/TharuHRPrivacyPolicy';
 
 const PrivacyPolicy: React.FC = () => {
   return (
@@ -184,6 +185,8 @@ const App: React.FC = () => {
           <Route path="/process" element={<div><Navbar /><Process /><Footer /></div>} />
           <Route path="/app-privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/tharuFloraprivacypolicy" element={<TharuFloraPrivacyPolicy />} />
+          <Route path="/tharuHRPrivacyPolicy" element={<TharuHRPrivacyPolicy />} />
+          <Route path="/tharu-hr-privacy-policy" element={<TharuHRPrivacyPolicy />} />
           <Route path="/verify/:id" element={<VerifyCertificate />} />
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
